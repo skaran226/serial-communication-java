@@ -3,27 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
- import javax.swing.JOptionPane;
+ package test;
  import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
-import com.fazecast.jSerialComm.SerialPortPacketListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+ import com.fazecast.jSerialComm.SerialPortDataListener;
+ import com.fazecast.jSerialComm.SerialPortEvent;
+import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author Admin
  */
 public class NewJFrame extends javax.swing.JFrame {
-
+String str="";
     /**
      * Creates new form NewJFrame
      */
@@ -44,6 +36,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         RecivedData = new javax.swing.JTextArea();
+        comName = new javax.swing.JTextField();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -66,6 +59,7 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         RecivedData.setColumns(20);
+        RecivedData.setLineWrap(true);
         RecivedData.setRows(5);
         jScrollPane1.setViewportView(RecivedData);
 
@@ -75,18 +69,23 @@ public class NewJFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(126, 126, 126)))
-                .addContainerGap(381, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(comName, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(412, 412, 412))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(48, 48, 48)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(70, Short.MAX_VALUE))
@@ -98,9 +97,12 @@ public class NewJFrame extends javax.swing.JFrame {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-       SerialPort comPort = SerialPort.getCommPort("COM10");
+        
+       SerialPort comPort;
+    comPort = SerialPort.getCommPort(comName.getText());
     comPort.openPort();
-     comPort.addDataListener(new SerialPortDataListener() {
+    if(comPort.isOpen()){
+         comPort.addDataListener(new SerialPortDataListener() {
         
               
            @Override
@@ -120,7 +122,7 @@ public class NewJFrame extends javax.swing.JFrame {
                //byte[] data=new byte[bytes];
                comPort.readBytes(newData, 0, newData.length);
               // RecivedData.setText(newData.length+" ");
-               String str="";
+               
                for (int i = 0; i < newData.length; ++i){
                    
                    str+=newData[i];
@@ -138,6 +140,11 @@ public class NewJFrame extends javax.swing.JFrame {
                       
            }
        });
+    }
+    else{
+        JOptionPane.showMessageDialog(this, "POrt not available or port not open");
+    }
+    
        
     
        
@@ -189,6 +196,7 @@ public class NewJFrame extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JTextArea RecivedData;
+    private javax.swing.JTextField comName;
     private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JScrollPane jScrollPane1;
